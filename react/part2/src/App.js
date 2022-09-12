@@ -1,71 +1,81 @@
 import './App.css';
-import {Course} from './Course.js'
+import {useState , useEffect} from 'react';  // utilizamos useEffect para controlar cuando se ejecuta el fetch y cada vez que se renderiza nuestro componente
+import {Note} from './Note.js'; //asi importamos un modulo. podemos colocarle el nombre que queramos
 
-const course = [
-  {
-    id: 1,
-    name: 'Half Stack application development',
-    parts: 
-    [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10,
-        id: 25,
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-        id: 30,
-      },
-      {
-        name: 'State of a component',
-        exercises: 14,
-        id: 41,
-      },
-      {
-        name: 'Redux',
-        exercises: 11,
-        id: 4,
-      },
-    ],
-  },
-  {
-    name: 'Node.js',
-    id: 2,
-    parts: 
-    [
-      {
-        name: 'Routing',
-        exercises: 3,
-        id: 1,
-      },
-      {
-        name: 'Middlewares',
-        exercises: 7,
-        id: 2,
-      },
-    ],
+
+function App() { //cuando voy a recorrer un array con .map, siempre tiene que llevar una key, es algo interno de react
+  // las key, tienen que ser un identificador unico.
+  //se puede renderizar un array de una vez, pero es mas leible jsx
+
+  const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState("");
+  // const [showAll, setShowAll] = useState(true);
+  const [loading, setLoading] = useState(false)
+
+  /* utilizo el setTimeout para ver como se renderiza primero mi app sin el fetch y 
+  luego es que se renderiza el useEffect y aparecen las notas. esto pasa porque mi app esta siendo asincrona, o sea
+  no espera por el use effect a que se renderice(ya que dura un poco la peticion poque le decimos que dure 2segs en hacerlo), 
+  va renderizando todo lo que encuentre en su camino al momento */
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => { 
+      fetch('https://jsonplaceholder.typicode.com/posts')
+      .then((res) => res.json())
+      .then((json) => {
+        setNotes(json);
+        setLoading(false);
+      });
+    }, 2000);
+  }, [])
+  /*Las dependecias en el useEffect es para controlar cuando se va a renderizar en si, 
+  aqui le estamsos pasando newNote, y cada vez que agregemos una nota el useEffect se ejecutara, 
+  en resumen este efecto depende del valor de newNote, si este cambia, vuelve a utilizar el efecto*/
+  
+  const handleChange = (event) => {
+    setNewNote(event.target.value);
+  };
+  
+  const handleSubmit = (event) => {
+    event.preventDefault(); // tengo que colcocar esto para que evite su comportamiento normal,
+    // ya que el form siempre que le hacemos el submit nos recarga la paigna porque envia los datos con un "post"
+    const noteToAddToState = {
+      id: notes.length + 1,
+      tilte: newNote,
+      body: newNote
+    };
+
+    setNotes([...notes, noteToAddToState]);
+    setNewNote("");
   }
-]
+  
+  // const handleShowAll = () => {
+  //   setShowAll(() => !showAll);
+  // };
 
-const initialValue = 0
-const totalExercises1 = course[0].parts.reduce((previousValue, currentValue) => {
-    return previousValue + currentValue.exercises;
-  }, initialValue);
+  // if (notes.length === 0) return "hola esperando por el useEffect";
 
-  const totalExercises2 = course[1].parts.reduce((previousValue, currentValue) => {
-    return previousValue + currentValue.exercises;
-  }, initialValue);  
+  return (
+    <div>
+      <h2>My Notes</h2>
+      {/* <button onClick={handleShowAll}>{showAll ? "Show only important" : "Show all"}</button> */}
 
-const App = () => {
-    return (
-        <div key={course.id}>
-            <Course name={course[0].name} parts={course[0].parts} />
-            <p><strong>Total of {totalExercises1} exercises</strong></p>
+      {loading ? "Cargando..." : ""}
+      <ol>
+        {notes
+        // .filter((note) => { if (showAll === true) return true;  // el filter deberia volver siempre un boolean
+        // return note.important === true; 
+        // })
+        .map((note) => (<Note key={note.id} {...note} />
+        ))}
+      </ol>
 
-            <Course name={course[1].name} parts={course[1].parts} />
-            <p><strong>Total of {totalExercises2} exercises</strong></p>
-        </div>
-  )}
-
+      <form onSubmit={handleSubmit}> 
+        <input type="text" onChange={handleChange} value={newNote} />
+        <button>New Note</button>
+      </form>
+    </div>
+  );
+}
+// cuando colocamos el handleSubmit en el form ya no es necesario utilizar el handleClick
+// tener claro que el ultimo boton de un formulario funciona como un submit.
 export default App;

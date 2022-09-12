@@ -1,15 +1,10 @@
-export const Note = ({ categories = [], content, date }) => { 
+export const Note = ({ title, body }) => { 
     //asi puedo printear el valor de categories que solo esta en el primer elemento de notes, 
     //colocandole un valor por defecto ("[]") cuando lo paso como prop en Note
     return (
       <li> 
-          <p>{content}</p>
-          <small><time>Date: {date}</time></small>
-          {
-            categories.map((category) => {
-                return <p key={category}><strong>{category}</strong></p>
-            } )
-          }
+          <p>{title}</p>
+          <small>{body}</small>
       </li>
     );
   };

@@ -1,4 +1,4 @@
-
+// exercises 2.1-2.5
 export const Course = ({name, parts}) => {
     return (
         <div >
