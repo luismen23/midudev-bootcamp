@@ -19,7 +19,7 @@ function App() { //cuando voy a recorrer un array con .map, siempre tiene que ll
   useEffect(() => {
     setLoading(true);
     setTimeout(() => { 
-      fetch('https://jsonplaceholder.typicode.com/posts')
+      fetch('https://jsonplaceholder.typicode.com/posts')  // el fetch es asincrono o sea qeu no espera por mi app para que se renderize, por eso usamos el useEffect
       .then((res) => res.json())
       .then((json) => {
         setNotes(json);
@@ -40,7 +40,7 @@ function App() { //cuando voy a recorrer un array con .map, siempre tiene que ll
     // ya que el form siempre que le hacemos el submit nos recarga la paigna porque envia los datos con un "post"
     const noteToAddToState = {
       id: notes.length + 1,
-      tilte: newNote,
+      title: newNote,
       body: newNote
     };
 
