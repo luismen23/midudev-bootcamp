@@ -39,12 +39,21 @@ function App() { //cuando voy a recorrer un array con .map, siempre tiene que ll
     event.preventDefault(); // tengo que colcocar esto para que evite su comportamiento normal,
     // ya que el form siempre que le hacemos el submit nos recarga la paigna porque envia los datos con un "post"
     const noteToAddToState = {
-      id: notes.length + 1,
       title: newNote,
-      body: newNote
+      body: newNote,
+      userId: 1
     };
+   // con este nuevo fetch, estoy creando la nota pero de una vez en el servidor(con el metodo post)
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'POST',
+    body: JSON.stringify(noteToAddToState),
+    headers: {'Content-type': 'application/json; charset=UTF-8',},
+    })
+    .then((response) => response.json())
+    .then((json) => setNotes(prevNotes => prevNotes.concat(json)));  //aqui estoy concatenando mis notas anteriores a la respuesta que me da el fecht que es la nueva nota
+   
 
-    setNotes([...notes, noteToAddToState]);
+    // setNotes([...notes, noteToAddToState]);
     setNewNote("");
   }
   

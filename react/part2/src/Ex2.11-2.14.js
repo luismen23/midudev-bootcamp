@@ -62,7 +62,7 @@ const App = () => {
             </label>
         </form>
         <button onClick={handleShow}>{show ? 'Show Info' : 'Hide Info'}</button>
-        <Content countries={countries} query={query}  show={show}/>
+        <Content countries={countries} query={query} show={show}/>
         
       </div>
     )
